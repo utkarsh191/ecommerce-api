@@ -34,20 +34,22 @@ const registerUser = async (req, res) => {
   });
 };
 
+
 const loginUser = async (req, res) => {
 
-  const {email, password} = req.body;
+  const { email, password } = req.body;
 
-  if(!email || !password) {
+  if (!email || !password) {
     return res.status(400).json({
       message: "Email and password are required"
     });
   }
+
   const user = await User.findOne({ email });
 
-  if(!user) {
+  if (!user) {
     return res.status(400).json({
-      message: "Invalif email or password"
+      message: "Invalid email or password"
     });
   }
 
@@ -55,18 +57,30 @@ const loginUser = async (req, res) => {
     password,
     user.password
   );
+
   if (!isPasswordMatch) {
     return res.status(400).json({
       message: "Invalid email or password"
     });
   }
 
+  const token = jwt.sign(
+    {
+    userId: user._id
+  },
+  "mysecretkey",
+  {
+    expiresIn: "1h"
+  }
+);
+
   return res.status(200).json({
     message: "Login successful",
+    token,
     user
   });
+};
 
-}
 
 module.exports = {
   registerUser,
