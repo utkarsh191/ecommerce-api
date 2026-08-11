@@ -43,9 +43,10 @@ const getProductById = async (req, res) => {
   }
 
   return res.status(200).json({
+    message: "Product found successfully",
     product
   });
-};
+}
 
 const updateProduct = async (req, res) => {
   const { id } = req.params;
@@ -60,8 +61,7 @@ const updateProduct = async (req, res) => {
 
   if (!product) {
     return res.status(404).json({
-      message: "Product not found";
-      product
+      message: "Product not found"
     });
   }
 };
