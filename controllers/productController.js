@@ -23,6 +23,69 @@ const addProduct = async(req, res) => {
   })
 };
 
+const getAllProducts = async (req, res) => {
+  const products = await  Product.find();
+
+  return res.status(200).json({
+    products
+  });
+};
+
+const getProductById = async (req, res) => {
+  const{ id } = req.params;
+
+  const product = await Product.findById(id);
+
+  if(!product) {
+    return res.status(404).json({
+      messgae: "Product not found"
+    });
+  }
+
+  return res.status(200).json({
+    product
+  });
+};
+
+const updateProduct = async (req, res) => {
+  const { id } = req.params;
+
+  const product = await Product.findByIdAndUpdate(
+    id,
+    req.body,
+    {
+      new: true
+    }
+  );
+
+  if (!product) {
+    return res.status(404).json({
+      message: "Product not found";
+      product
+    });
+  }
+};
+
+const deleteProduct = async (req, res) => {
+  const{ id } = req.params;
+
+  const product = await Product.findByIdAndDelete(id);
+
+  if(!product) {
+    return res.status(404).json({
+      message: "Product not found"
+    });
+  }
+
+  return res.status(200).json({
+    message: "Product deleted successfully"
+  });
+};
+
 module.exports = {
-  addProduct
+  addProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct
 };
