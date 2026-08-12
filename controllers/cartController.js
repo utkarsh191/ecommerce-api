@@ -70,7 +70,35 @@ const getMyCart = async (req, res) => {
   });
 };
 
+const removeFromCart = async (req,res) => {
+  const { productId } = req.params;
+
+  const cart = await Cart.findOne({
+    user: req.user.userId
+  });
+
+  if(!cart) {
+    return res.status(404).json({
+      message: "Cart not found"
+    });
+  }
+
+  cart.item = cart.items.filter(
+    item => item.product.toString() !== productId
+  );
+
+  await cart.save();
+
+  return res.status(200).json({
+    message: "Product removed from cart",
+    cart
+  });
+
+};
+
+  
 module.exports = {
   addToCart,
-  getMyCart
+  getMyCart,
+  removeFromCart
 }

@@ -5,7 +5,7 @@ const addProduct = async(req, res) => {
 
   if(!name || !price || !description || !category ) {
     return res.status(400).json({
-      messgae: "All required fields are required"
+      message: "All required fields are required"
     });
   }
 
@@ -38,7 +38,7 @@ const getProductById = async (req, res) => {
 
   if(!product) {
     return res.status(404).json({
-      messgae: "Product not found"
+      message: "Product not found"
     });
   }
 
@@ -64,6 +64,11 @@ const updateProduct = async (req, res) => {
       message: "Product not found"
     });
   }
+
+  return res.status(200).json({
+    message: "product updated successfully",
+    product
+  })
 };
 
 const deleteProduct = async (req, res) => {
