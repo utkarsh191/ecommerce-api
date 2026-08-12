@@ -83,7 +83,7 @@ const removeFromCart = async (req,res) => {
     });
   }
 
-  cart.item = cart.items.filter(
+  cart.items = cart.items.filter(
     item => item.product.toString() !== productId
   );
 
