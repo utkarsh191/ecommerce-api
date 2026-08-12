@@ -57,7 +57,7 @@ return res.status(200).json({
 const getMyCart = async (req, res) => {
   const cart = await Cart.findOne({
     user: req.user.userId
-  });
+  }).populate("items.product");
 
   if(!cart) {
     return res.status(404).json({
@@ -65,8 +65,16 @@ const getMyCart = async (req, res) => {
     });
   }
 
+   let subtotal = 0;
+
+  cart.items.forEach(item => {
+    subtotal += item.product.price * item.quantity;
+  });
+
+
   return res.status(200).json({
-    cart
+    cart,
+    subtotal
   });
 };
 
@@ -82,6 +90,7 @@ const removeFromCart = async (req,res) => {
       message: "Cart not found"
     });
   }
+
 
   cart.items = cart.items.filter(
     item => item.product.toString() !== productId
