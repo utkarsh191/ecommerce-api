@@ -25,15 +25,34 @@ const addProduct = async(req, res) => {
 
 const getAllProducts = async (req, res) => {
 
-  const { search } = req.query;
+  const { search, category, minPrice, maxPrice } = req.query;
 
   let query = {};
 
+  // Search
   if (search) {
     query.name = {
       $regex: search,
       $options: "i"
     };
+  }
+
+  // Category filter
+  if (category) {
+    query.category = category;
+  }
+
+  // Price filter
+  if (minPrice || maxPrice) {
+    query.price = {};
+
+    if (minPrice) {
+      query.price.$gte = Number(minPrice);
+    }
+
+    if (maxPrice) {
+      query.price.$lte = Number(maxPrice);
+    }
   }
 
   const products = await Product.find(query);
