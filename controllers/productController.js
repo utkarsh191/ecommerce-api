@@ -24,7 +24,19 @@ const addProduct = async(req, res) => {
 };
 
 const getAllProducts = async (req, res) => {
-  const products = await  Product.find();
+
+  const { search } = req.query;
+
+  let query = {};
+
+  if (search) {
+    query.name = {
+      $regex: search,
+      $options: "i"
+    };
+  }
+
+  const products = await Product.find(query);
 
   return res.status(200).json({
     products
