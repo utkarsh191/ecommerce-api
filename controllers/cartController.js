@@ -55,6 +55,9 @@ return res.status(200).json({
 };
 
 const getMyCart = async (req, res) => {
+
+  const { coupon } = req.body;
+
   const cart = await Cart.findOne({
     user: req.user.userId
   }).populate("items.product");
@@ -79,7 +82,13 @@ const getMyCart = async (req, res) => {
     deliveryCharge = 100;
   }
 
-  let total = subtotal + tax + deliveryCharge;
+  let discount = 0;
+
+  is(coupan === "SAVE10") {
+    discount = subtotal * 0.10
+  }
+
+  let total = subtotal + tax + deliveryCharge - discount;
 
 
   return res.status(200).json({
