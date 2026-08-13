@@ -55,7 +55,23 @@ const getAllProducts = async (req, res) => {
     }
   }
 
-  const products = await Product.find(query);
+  // Sort
+  let sort = {};
+
+  if (req.query.sort) {
+    const sortField = req.query.sort.startsWith("-")
+      ? req.query.sort.substring(1)
+      : req.query.sort;
+
+    const sortOrder = req.query.sort.startsWith("-")
+      ? -1
+      : 1;
+
+    sort[sortField] = sortOrder;
+  }
+
+  const products = await Product.find(query)
+    .sort(sort);
 
   return res.status(200).json({
     products
