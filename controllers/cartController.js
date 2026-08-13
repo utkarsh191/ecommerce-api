@@ -71,10 +71,23 @@ const getMyCart = async (req, res) => {
     subtotal += item.product.price * item.quantity;
   });
 
+  let tax = subtotal * 0.18;
+
+  let deliveryCharge = 0;
+
+  if(subtotal < 1000) {
+    deliveryCharge = 100;
+  }
+
+  let total = subtotal + tax + deliveryCharge;
+
 
   return res.status(200).json({
     cart,
-    subtotal
+    subtotal,
+    tax,
+    deliveryCharge,
+    total
   });
 };
 
