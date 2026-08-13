@@ -52,6 +52,22 @@ const addToWishlist = async (req, res) => {
     });
   };
 
+  const getMyWishlist = async (req,res) => {
+    const wishlist = await Wishlist.findOne({
+      user: req.user.userId
+    }).populate("products");
+
+    if(!wishlist) {
+      return res.status(404).json({
+        message: "Wishlist not found"
+      });
+    }
+    return res.status(200).json({
+      wishlist
+    })
+  }
+
   module.exports = {
-    addToWishlist
+    addToWishlist,
+    getMyWishlist
   };
