@@ -27,6 +27,7 @@ const addToWishlist = async (req, res) => {
 
       return res.status(201).json({
         message: "Product added to wishlist",
+        wishlist
       });
     }
 
@@ -47,7 +48,7 @@ const addToWishlist = async (req, res) => {
     await wishlist.save();
 
     return res.status(200).json({
-      message: "produxt added to wishlist",
+      message: "product added to wishlist",
       wishlist
     });
   };
@@ -67,7 +68,43 @@ const addToWishlist = async (req, res) => {
     })
   }
 
+  const removeFromWishlist = async (req, res) => {
+  const { productId } = req.params;
+
+  const wishlist = await Wishlist.findOne({
+    user: req.user.userId
+  });
+
+  if (!wishlist) {
+    return res.status(404).json({
+      message: "Wishlist not found"
+    });
+  }
+
+  const productExists = wishlist.products.some(
+    id => id.toString() === productId
+  );
+
+  if (!productExists) {
+    return res.status(404).json({
+      message: "Product not found in wishlist"
+    });
+  }
+
+  wishlist.products = wishlist.products.filter(
+    id => id.toString() !== productId
+  );
+
+  await wishlist.save();
+
+  return res.status(200).json({
+    message: "Product removed from wishlist",
+    wishlist
+  });
+};
+
   module.exports = {
     addToWishlist,
-    getMyWishlist
+    getMyWishlist,
+    removeFromWishlist
   };
