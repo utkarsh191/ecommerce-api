@@ -1,5 +1,6 @@
 const Wishlist =require("../models/Wishlist");
 const Product = require("../models/Product");
+const Cart = require("../models/Cart");
 
 const addToWishlist = async (req, res) => {
   const { productId } = req.body;
@@ -103,8 +104,84 @@ const addToWishlist = async (req, res) => {
   });
 };
 
+const moveWishlistToCart = async (req, res) => {
+  const { productId } = req.body;
+
+  // Find user's wishlist
+  const wishlist = await Wishlist.findOne({
+    user: req.user.userId
+  });
+
+  if (!wishlist) {
+    return res.status(404).json({
+      message: "Wishlist not found"
+    });
+  }
+
+  // Check product exists in wishlist
+  const productExists = wishlist.products.some(
+    id => id.toString() === productId
+  );
+
+  if (!productExists) {
+    return res.status(404).json({
+      message: "Product not found in wishlist"
+    });
+  }
+
+  // Find user's cart
+  let cart = await Cart.findOne({
+    user: req.user.userId
+  });
+
+  // If cart doesn't exist, create it
+  if (!cart) {
+    cart = await Cart.create({
+      user: req.user.userId,
+      items: [
+        {
+          product: productId,
+          quantity: 1
+        }
+      ]
+    });
+  } else {
+    // Check if product already exists in cart
+    const existingItem = cart.items.find(
+      item => item.product.toString() === productId
+    );
+
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.items.push({
+        product: productId,
+        quantity: 1
+      });
+    }
+
+    await cart.save();
+  }
+
+  // Remove product from wishlist
+  wishlist.products = wishlist.products.filter(
+    id => id.toString() !== productId
+  );
+
+  await wishlist.save();
+
+  return res.status(200).json({
+    message: "Product moved from wishlist to cart",
+    cart,
+    wishlist
+  });
+};
+
+
+
   module.exports = {
     addToWishlist,
     getMyWishlist,
-    removeFromWishlist
+    removeFromWishlist,
+    moveWishlistToCart
   };

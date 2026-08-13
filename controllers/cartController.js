@@ -84,7 +84,7 @@ const getMyCart = async (req, res) => {
 
   let discount = 0;
 
-  is(coupan === "SAVE10") {
+  is(coupon === "SAVE10") {
     discount = subtotal * 0.10
   }
 
