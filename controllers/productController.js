@@ -25,7 +25,14 @@ const addProduct = async(req, res) => {
 
 const getAllProducts = async (req, res) => {
 
-  const { search, category, minPrice, maxPrice } = req.query;
+  const {
+    search,
+    category,
+    minPrice,
+    maxPrice,
+    page = 1,
+    limit = 10
+  } = req.query;
 
   let query = {};
 
@@ -70,8 +77,13 @@ const getAllProducts = async (req, res) => {
     sort[sortField] = sortOrder;
   }
 
+  // Pagination
+  const skip = (page - 1) * limit;
+
   const products = await Product.find(query)
-    .sort(sort);
+    .sort(sort)
+    .skip(skip)
+    .limit(Number(limit));
 
   return res.status(200).json({
     products
