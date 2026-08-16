@@ -84,7 +84,7 @@ const getMyCart = async (req, res) => {
 
   let discount = 0;
 
-  is(coupon === "SAVE10") {
+  if(coupon === "SAVE10") {
     discount = subtotal * 0.10
   }
 
@@ -124,7 +124,7 @@ const removeFromCart = async (req,res) => {
     message: "Product removed from cart",
     cart
   });
-
+  
 };
 
 const updateQuantity = async (req, res) => {
@@ -171,3 +171,6 @@ module.exports = {
   removeFromCart,
   updateQuantity
 }
+
+
+

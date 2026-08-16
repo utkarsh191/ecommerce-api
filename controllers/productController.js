@@ -1,28 +1,5 @@
 const Product = require("../models/Product");
 
-const addProduct = async(req, res) => {
-  const { name, price, description, category, image, stock} = req.body;
-
-  if(!name || !price || !description || !category ) {
-    return res.status(400).json({
-      message: "All required fields are required"
-    });
-  }
-
-  const product = await Product.create({
-    name,
-    price,
-    description,
-    category,
-    image,
-    stock
-  });
-  
-  return res.status(201).json({
-    message: "product added successfully",
-  })
-};
-
 const getAllProducts = async (req, res) => {
 
   const {
@@ -146,10 +123,28 @@ const deleteProduct = async (req, res) => {
   });
 };
 
+const addProduct = async (req, res) => {
+  const { name, price, description, category, stock } = req.body;
+
+  const product = await Product.create({
+    name,
+    price,
+    description,
+    category,
+    image: req.file ? req.file.filename : undefined,
+    stock
+  });
+
+  return res.status(201).json({
+    message: "Product added successfully",
+    product
+  });
+};
+
 module.exports = {
-  addProduct,
   getAllProducts,
   getProductById,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  addProduct
 };
