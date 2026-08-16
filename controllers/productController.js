@@ -1,4 +1,5 @@
 const Product = require("../models/Product");
+const uploadToCloudinary = require("../utils/uploadToCloudinary");
 
 const getAllProducts = async (req, res) => {
 
@@ -126,12 +127,19 @@ const deleteProduct = async (req, res) => {
 const addProduct = async (req, res) => {
   const { name, price, description, category, stock } = req.body;
 
+  let imageUrl;
+
+  if (req.file) {
+    const result = await uploadToCloudinary(req.file.buffer);
+    imageUrl = result.secure_url;
+  }
+
   const product = await Product.create({
     name,
     price,
     description,
     category,
-    image: req.file ? req.file.filename : undefined,
+    image: imageUrl,
     stock
   });
 
