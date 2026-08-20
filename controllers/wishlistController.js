@@ -130,7 +130,7 @@ const moveWishlistToCart = async (req, res) => {
   }
 
   // Find user's cart
-  let cart = await Cart.findOne({
+  let car t = await Cart.findOne({
     user: req.user.userId
   });
 
@@ -176,7 +176,6 @@ const moveWishlistToCart = async (req, res) => {
     wishlist
   });
 };
-
 
 
   module.exports = {
